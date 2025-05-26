@@ -196,3 +196,18 @@ class Model:
                 self.history.append(cur_content)
 
             message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": cur_content})
+
+
+    def get_summary(self, history, config):
+        message = [{
+            "role": "system",
+            "content": "用户会输入一个较长的对话记录，请你生成摘要。两个要求，首先是简洁不能太长，然后是精确，让之后的人看到摘要就明白之前的对话大致做了哪些事"
+        }]
+        message.append({"role": "user", "content": history})
+
+        response = self.client.chat.completions.create(
+            model=config.models[config.model_choice]['v3'],
+            messages=message,
+            stream=False
+        )
+        return response.choices[0].message.content
