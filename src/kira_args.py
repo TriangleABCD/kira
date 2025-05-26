@@ -1,14 +1,5 @@
 import argparse
 
-
-# models_const = {
-#     'api_chose': {
-#         'r1': 'model_r1',
-#         'v3': 'model_v3'
-#     }
-# }
-# api_chose = 'api_chose'
-
 class Args:
     def __init__(self, model=None, chat=False, add=False, stream=False, init=False, non_option_args=None):
         self.model = model
@@ -20,14 +11,15 @@ class Args:
 
 
 class ArgumentParserWrapper:
-    def __init__(self, description):
+    def __init__(self, description, config):
+        self.config = config
         self.parser = argparse.ArgumentParser(description=description)
         self.add_arguments()
     
     def add_arguments(self):
         self.parser.add_argument('-r', '--r1', action='store_const',
-                                 const=models_const[api_chose]['r1'],
-                                 default=models_const[api_chose]['v3'],
+                                 const=self.config.models[self.config.model_choice]['r1'],
+                                 default=self.config.models[self.config.model_choice]['v3'],
                                  dest='model', help="使用 deepseek-reasoner 模型")
         self.parser.add_argument('-c', '--chat', action='store_true', dest='chat', help="对话形式")
         self.parser.add_argument('-a', '--add', action='store_true', dest='add', help="输出原文")
@@ -48,9 +40,10 @@ class ArgumentParserWrapper:
         return args
 
 
-def get_args():
+def get_args(config):
     arg_parser = ArgumentParserWrapper(
-        description='kira(Knowledge Interactive Response Agent), 命令行大模型 Agent 工具'
+        description='kira(Knowledge Interactive Response Agent), 命令行大模型 Agent 工具',
+        config=config
     )
     args = arg_parser.parse_args()
     return args

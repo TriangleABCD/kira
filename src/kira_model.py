@@ -13,7 +13,7 @@ class Model:
         self.api_key_encrypt = encrypt
 
         self.client = None
-        self.init_client(self)
+        self.init_client()
 
         self.message = [{
             "role": "system",
