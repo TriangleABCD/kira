@@ -1,7 +1,7 @@
 import kira_args, kira_config, kira_model, kira_project
 import sys
 
-kira_config_path = '/home/wyy/code/kira/config/kira.config.json'
+kira_config_path = '/path/to/your/config/file'
 has_kira_projext = False
 
 if __name__ == "__main__":
