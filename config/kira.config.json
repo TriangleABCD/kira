@@ -1,0 +1,21 @@
+{
+  "models": {
+    "deepseek": {
+        "url": "https://api.deepseek.com",
+        "v3": "deepseek-chat",
+        "r1": "deepseek-reasoner",
+        "key_path": "",
+        "key_key_path": "",
+        "encrypt": true
+    },
+    "siliconflow": {
+        "url": "https://api.siliconflow.cn/v1",
+        "v3": "deepseek-ai/DeepSeek-V3",
+        "r1": "deepseek-ai/DeepSeek-R1",
+        "key_path": "",
+        "key_key_path": "",
+        "encrypt": true
+    }
+  },
+  "model_choice": "deepseek"
+}
