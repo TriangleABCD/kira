@@ -51,11 +51,14 @@ class Model:
         message = self.message
         message.append({"role": "user", "content": user_input})
 
-        response = self.client.chat.completions.create(
-            model=config.models[config.model_choice]['v3'],
-            messages=message,
-            stream=args.stream
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=config.models[config.model_choice]['v3'],
+                messages=message,
+                stream=args.stream
+            )
+        except KeyboardInterrupt:
+            print("用户已终止操作")
 
         print('')
         
@@ -70,50 +73,53 @@ class Model:
     def chat(self, args, config):
         pre_input = " ".join(args.non_option_args)
         message = self.message
-        while True:
-            print('🥰:')
-            user_input = multi_line_input()
-            if user_input == 'exit' or user_input == 'quit' or user_input == 'q':
-                break
+        try:
+            while True:
+                print('🥰:')
+                user_input = multi_line_input()
+                if user_input == 'exit' or user_input == 'quit' or user_input == 'q':
+                    break
 
-            if user_input.startswith('!'):
-                command = user_input[1:]
-                pre_input = ''
-                try:
-                    print('命令执行成功')
-                    result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
-                    pre_input = result.stdout + '\n' + result.stderr
-                    print(pre_input)
-                    message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": pre_input})
-                except subprocess.CalledProcessError as e:
-                    print('命令执行失败:', e)
-                continue
+                if user_input.startswith('!'):
+                    command = user_input[1:]
+                    pre_input = ''
+                    try:
+                        print('命令执行成功')
+                        result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
+                        pre_input = result.stdout + '\n' + result.stderr
+                        print(pre_input)
+                        message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": pre_input})
+                    except subprocess.CalledProcessError as e:
+                        print('命令执行失败:', e)
+                    continue
 
-            user_input = pre_input + '\n' + user_input
-            self.history.append(user_input)
+                user_input = pre_input + '\n' + user_input
+                self.history.append(user_input)
 
-            message = self.message
-            message.append({"role": "user", "content": user_input})
-            message.append({"role": "user", "content": user_input})
+                message = self.message
+                message.append({"role": "user", "content": user_input})
+                message.append({"role": "user", "content": user_input})
 
-            response = self.client.chat.completions.create(
-                model=config.models[config.model_choice]['v3'],
-                messages=message,
-                stream=args.stream
-            )
+                response = self.client.chat.completions.create(
+                    model=config.models[config.model_choice]['v3'],
+                    messages=message,
+                    stream=args.stream
+                )
 
-            print('')
-            cur_content = ""
+                print('')
+                cur_content = ""
 
-            if args.stream:
-                print('[' + self.vendor_name + '-' + config.models[config.model_choice]['v3'] + ' 🤖 ]:')
-                cur_content = stream_output(response)
-                self.history.append(cur_content)
-            else:
-                cur_content = response.choices[0].message.content
-                print(cur_content)
-                self.history.append(cur_content)
-            message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": cur_content})
+                if args.stream:
+                    print('[' + self.vendor_name + '-' + config.models[config.model_choice]['v3'] + ' 🤖 ]:')
+                    cur_content = stream_output(response)
+                    self.history.append(cur_content)
+                else:
+                    cur_content = response.choices[0].message.content
+                    print(cur_content)
+                    self.history.append(cur_content)
+                message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": cur_content})
+        except KeyboardInterrupt:
+            print("用户已终止操作")
 
 
     def reasonal_chat_once(self, args, config):
@@ -150,52 +156,55 @@ class Model:
     def reasonal_chat(self, args, config):
         pre_input = " ".join(args.non_option_args)
         message = self.message
-        while True:
-            print('🥰:')
-            user_input = multi_line_input()
-            if user_input == 'exit' or user_input == 'quit' or user_input == 'q':
-                break
+        try:
+            while True:
+                print('🥰:')
+                user_input = multi_line_input()
+                if user_input == 'exit' or user_input == 'quit' or user_input == 'q':
+                    break
 
-            if user_input.startswith('!'):
-                command = user_input[1:]
-                pre_input = ''
-                try:
-                    print('命令执行成功')
-                    result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
-                    pre_input = result.stdout + '\n' + result.stderr
-                    print(pre_input)
-                    message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": pre_input})
-                except subprocess.CalledProcessError as e:
-                    print('命令执行失败:', e)
-                continue
+                if user_input.startswith('!'):
+                    command = user_input[1:]
+                    pre_input = ''
+                    try:
+                        print('命令执行成功')
+                        result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
+                        pre_input = result.stdout + '\n' + result.stderr
+                        print(pre_input)
+                        message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": pre_input})
+                    except subprocess.CalledProcessError as e:
+                        print('命令执行失败:', e)
+                    continue
 
-            user_input = pre_input + '\n' + user_input
-            self.history.append(user_input)
+                user_input = pre_input + '\n' + user_input
+                self.history.append(user_input)
 
-            message.append({"role": "user", "content": user_input})
+                message.append({"role": "user", "content": user_input})
 
-            response = self.client.chat.completions.create(
-                model=config.models[config.model_choice]['r1'],
-                messages=message,
-                stream=args.stream
-            )
+                response = self.client.chat.completions.create(
+                    model=config.models[config.model_choice]['r1'],
+                    messages=message,
+                    stream=args.stream
+                )
 
-            print('')
-            cur_content = ""
-
-            if args.stream:
-                cur_content = stream_output_reason(response, self.vendor_name + '-' + config.models[config.model_choice]['r1'])
-                self.history.append(cur_content)
-            else:
-                print('[' + self.vendor_name + '-' + config.models[config.model_choice]['r1'] + ' 🤖🧐 ]:')
-                print(response.choices[0].message.reasoning_content)
                 print('')
-                print('[' + self.vendor_name + '-' + config.models[config.model_choice]['r1'] + ' 🤖 ]:')
-                cur_content = response.choices[0].message.content
-                print(cur_content)
-                self.history.append(cur_content)
+                cur_content = ""
 
-            message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": cur_content})
+                if args.stream:
+                    cur_content = stream_output_reason(response, self.vendor_name + '-' + config.models[config.model_choice]['r1'])
+                    self.history.append(cur_content)
+                else:
+                    print('[' + self.vendor_name + '-' + config.models[config.model_choice]['r1'] + ' 🤖🧐 ]:')
+                    print(response.choices[0].message.reasoning_content)
+                    print('')
+                    print('[' + self.vendor_name + '-' + config.models[config.model_choice]['r1'] + ' 🤖 ]:')
+                    cur_content = response.choices[0].message.content
+                    print(cur_content)
+                    self.history.append(cur_content)
+
+                message.append({"refusal":None, "annotations": None, "audio": None, "function_call": None, "tool_calls": None, "role": "assistant", "content": cur_content})
+        except KeyboardInterrupt:
+            print("用户已终止操作")
 
 
     def get_summary(self, history, config):

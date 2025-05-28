@@ -75,10 +75,13 @@ def multi_line_input():
 
 def stream_output(response):
     content = ""
-    for chunk in response:
-        if chunk.choices[0].delta.content is not None:
-            print(chunk.choices[0].delta.content, end="", flush=True)
-            content += chunk.choices[0].delta.content
+    try:
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                print(chunk.choices[0].delta.content, end="", flush=True)
+                content += chunk.choices[0].delta.content
+    except KeyboardInterrupt:
+        print("用户已终止操作")
     print('')
     return content
 
@@ -86,18 +89,21 @@ def stream_output_reason(response, name):
     r_out_flag = False
     c_out_flag = False
     content = ""
-    for chunk in response:
-        if chunk.choices[0].delta.reasoning_content is not None:
-            if not r_out_flag:
-                print('[' + name + ' 🤖🧐 ]:')
-                r_out_flag = True
-            print(chunk.choices[0].delta.reasoning_content, end="", flush=True)
-        if chunk.choices[0].delta.content is not None:
-            if not c_out_flag:
-                print('\n\n[' + name + ' 🤖 ]:')
-                c_out_flag = True
-            print(chunk.choices[0].delta.content, end="", flush=True)
-            content += chunk.choices[0].delta.content
+    try:
+        for chunk in response:
+            if chunk.choices[0].delta.reasoning_content is not None:
+                if not r_out_flag:
+                    print('[' + name + ' 🤖🧐 ]:')
+                    r_out_flag = True
+                print(chunk.choices[0].delta.reasoning_content, end="", flush=True)
+            if chunk.choices[0].delta.content is not None:
+                if not c_out_flag:
+                    print('\n\n[' + name + ' 🤖 ]:')
+                    c_out_flag = True
+                print(chunk.choices[0].delta.content, end="", flush=True)
+                content += chunk.choices[0].delta.content
+    except KeyboardInterrupt:
+        print("用户已终止操作")
 
     print('')
     return content

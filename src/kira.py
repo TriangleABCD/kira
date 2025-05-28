@@ -1,7 +1,9 @@
+#!/bin/python3
+
 import kira_args, kira_config, kira_model, kira_project
 import sys
 
-kira_config_path = '/path/to/your/config/file'
+kira_config_path = '/path/to/your/config'
 has_kira_projext = False
 
 if __name__ == "__main__":
@@ -45,6 +47,7 @@ if __name__ == "__main__":
             model.reasonal_chat_once(args, config)
 
     if has_kira_projext:
+        print("正在写入项目历史记录")
         history = ""
         for his in model.history:
             history = history + his + '\n'
@@ -52,3 +55,4 @@ if __name__ == "__main__":
 
         summary = model.get_summary(history, config)
         project.write_history_summary(summary)
+        print("写入完毕")
